@@ -231,7 +231,7 @@ export default function KotaLanding() {
             Commencer gratuitement
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </button>
-          <button onClick={()=>setShowDemoModal(true)} style={{
+          <button onClick={()=>window.location.href="/demo"} style={{
             background: "transparent", color: K.white, border: `1px solid ${K.darkBorder}`,
             borderRadius: 14, padding: "16px 32px", fontSize: 17, fontWeight: 600,
             cursor: "pointer", display: "flex", alignItems: "center", gap: 10,
