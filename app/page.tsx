@@ -426,8 +426,8 @@ export default function KotaLanding() {
                 transition: "all 0.3s ease",
                 cursor: "default",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = `${step.color}10`; e.currentTarget.style.boxShadow = `0 0 30px ${step.color}15`; e.currentTarget.querySelector('.step-num').style.color = step.color; e.currentTarget.querySelector('.step-bar').style.borderColor = step.color; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector('.step-num').style.color = `${step.color}20`; e.currentTarget.querySelector('.step-bar').style.borderColor = `${step.color}30`; }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${step.color}10`; e.currentTarget.style.boxShadow = `0 0 30px ${step.color}15`; e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.querySelector('.step-num').style.color = step.color; e.currentTarget.querySelector('.step-bar').style.borderColor = step.color; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "scale(1)"; e.currentTarget.querySelector('.step-num').style.color = `${step.color}20`; e.currentTarget.querySelector('.step-bar').style.borderColor = `${step.color}30`; }}
               >
                 <div className="step-num" style={{
                   fontSize: 48, fontWeight: 900, color: `${step.color}20`, fontFamily: "'JetBrains Mono', monospace",
