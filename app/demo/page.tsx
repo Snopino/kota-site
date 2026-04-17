@@ -257,6 +257,13 @@ export default function Kota() {
         input,textarea,select,button{font-family:'Outfit',sans-serif}
         .sidebar-btn{transition:all .15s ease}
         .sidebar-btn:hover{background:${K.surface} !important}
+        @media (max-width: 768px) {
+          .desktop-sidebar { display: none !important; }
+          .mobile-nav { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .mobile-nav { display: none !important; }
+        }
       `}</style>
 
       {sendModal && <SendModal devis={sendModal} profile={profile} onClose={()=>setSendModal(null)} onSend={()=>{markSent(sendModal.id);}}/>}
@@ -267,7 +274,7 @@ export default function Kota() {
         </div>
       ) : (<>
         {/* SIDEBAR */}
-        <div style={{width:240,flexShrink:0,background:K.card,borderRight:`1px solid ${K.border}`,display:"flex",flexDirection:"column",height:"100vh"}}>
+        <div className="desktop-sidebar" style={{width:240,flexShrink:0,background:K.card,borderRight:`1px solid ${K.border}`,display:"flex",flexDirection:"column",height:"100vh"}}>
           {/* Logo */}
           <div style={{padding:"20px 20px 16px",display:"flex",alignItems:"center",gap:10}}>
             <div style={{width:36,height:36,background:K.gradient,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900}}>K</div>
@@ -339,6 +346,16 @@ export default function Kota() {
             {tab==="compta" && <ComptaPage devisList={devisList} profile={profile} onBack={()=>setTab("devis")}/>}
             {tab==="settings" && <SettingsPage profile={profile} setProfile={setProfile} prestas={prestas} setPrestas={setPrestas}/>}
           </div>
+          {/* Mobile bottom nav */}
+          {tab!=="edit" && tab!=="compta" && (
+            <nav className="mobile-nav" style={{display:"none",background:K.card,borderTop:`1px solid ${K.border}`,padding:"6px 0 env(safe-area-inset-bottom,6px)",flexShrink:0}}>
+              {[{key:"home",icon:ICONS.sparkle,label:"Assistant"},{key:"devis",icon:ICONS.file,label:"Mes devis"},{key:"settings",icon:ICONS.settings,label:"Réglages"}].map(t=>(
+                <button key={t.key} onClick={()=>setTab(t.key)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 0",border:"none",background:"none",cursor:"pointer",color:tab===t.key?K.accent:K.grayLight}}>
+                  <Ic d={t.icon} size={22} color={tab===t.key?K.accent:K.grayLight} sw={tab===t.key?2.2:1.5}/><span style={{fontSize:11,fontWeight:tab===t.key?600:400}}>{t.label}</span>
+                </button>
+              ))}
+            </nav>
+          )}
         </div>
       </>)}
     </div>
