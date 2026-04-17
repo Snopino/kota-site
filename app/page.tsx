@@ -36,6 +36,7 @@ export default function KotaLanding() {
   const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState(new Set());
   const [showDemoModal, setShowDemoModal] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY || 0);
@@ -93,6 +94,15 @@ export default function KotaLanding() {
         details summary svg { transition: transform 0.2s ease; }
         details[open] > div { animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) {
+          .nav-links { display: none !important; }
+          .nav-cta-desktop { display: none !important; }
+          .hamburger { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .hamburger { display: none !important; }
+          .mobile-menu { display: none !important; }
+        }
         .glow-border { position: relative; }
         .glow-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; background: linear-gradient(135deg, ${K.accent}40, transparent, ${K.accent}20); z-index: -1; }
         a { color: inherit; text-decoration: none; }
@@ -102,7 +112,7 @@ export default function KotaLanding() {
       {/* ═══ NAVBAR ═══ */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        padding: "16px 32px",
+        padding: "16px 20px",
         background: scrollY > 50 ? `${K.dark}ee` : "transparent",
         backdropFilter: scrollY > 50 ? "blur(20px)" : "none",
         borderBottom: scrollY > 50 ? `1px solid ${K.darkBorder}` : "1px solid transparent",
@@ -119,18 +129,48 @@ export default function KotaLanding() {
             Kōta
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        <div className="nav-links" style={{ display: "flex", alignItems: "center", gap: 24 }}>
           <a onClick={()=>document.getElementById("features")?.scrollIntoView({behavior:"smooth",block:"start"})} style={{ fontSize: 14, color: K.gray, fontWeight: 500, textDecoration: "none", cursor: "pointer" }}>Fonctionnalités</a>
           <a onClick={()=>document.getElementById("how")?.scrollIntoView({behavior:"smooth",block:"start"})} style={{ fontSize: 14, color: K.gray, fontWeight: 500, textDecoration: "none", cursor: "pointer" }}>Comment ça marche</a>
           <a onClick={()=>document.getElementById("pricing")?.scrollIntoView({behavior:"smooth",block:"start"})} style={{ fontSize: 14, color: K.gray, fontWeight: 500, textDecoration: "none", cursor: "pointer" }}>Tarifs</a>
           <a onClick={()=>document.getElementById("faq")?.scrollIntoView({behavior:"smooth",block:"start"})} style={{ fontSize: 14, color: K.gray, fontWeight: 500, textDecoration: "none", cursor: "pointer" }}>FAQ</a>
-          <button onClick={()=>setShowDemoModal(true)} style={{
+        </div>
+        <button onClick={()=>setShowDemoModal(true)} className="nav-cta-desktop" style={{
+          background: K.gradientMain, color: "#fff", border: "none",
+          borderRadius: 10, padding: "10px 22px", fontSize: 14, fontWeight: 600,
+          cursor: "pointer", transition: "all 0.2s",
+        }}>Essai gratuit</button>
+        <button className="hamburger" onClick={()=>setMobileMenu(!mobileMenu)} style={{
+          background: "none", border: "none", cursor: "pointer", padding: 8,
+          display: "flex", flexDirection: "column", gap: 5,
+        }}>
+          <span style={{ width: 24, height: 2, background: K.white, borderRadius: 2, transition: "all 0.2s", transform: mobileMenu ? "rotate(45deg) translate(5px, 5px)" : "none" }}/>
+          <span style={{ width: 24, height: 2, background: K.white, borderRadius: 2, transition: "all 0.2s", opacity: mobileMenu ? 0 : 1 }}/>
+          <span style={{ width: 24, height: 2, background: K.white, borderRadius: 2, transition: "all 0.2s", transform: mobileMenu ? "rotate(-45deg) translate(5px, -5px)" : "none" }}/>
+        </button>
+      </nav>
+
+      {/* Mobile menu */}
+      {mobileMenu && (
+        <div className="mobile-menu" style={{
+          position: "fixed", top: 68, left: 0, right: 0, zIndex: 99,
+          background: `${K.dark}f5`, backdropFilter: "blur(20px)",
+          borderBottom: `1px solid ${K.darkBorder}`,
+          padding: "16px 20px", display: "flex", flexDirection: "column", gap: 4,
+        }}>
+          {[{label:"Fonctionnalités",id:"features"},{label:"Comment ça marche",id:"how"},{label:"Tarifs",id:"pricing"},{label:"FAQ",id:"faq"}].map(item=>(
+            <a key={item.id} onClick={()=>{document.getElementById(item.id)?.scrollIntoView({behavior:"smooth",block:"start"});setMobileMenu(false);}} style={{
+              padding: "14px 16px", fontSize: 16, color: K.gray, fontWeight: 500, cursor: "pointer",
+              borderRadius: 10, transition: "background 0.2s",
+            }}>{item.label}</a>
+          ))}
+          <button onClick={()=>{setShowDemoModal(true);setMobileMenu(false);}} style={{
             background: K.gradientMain, color: "#fff", border: "none",
-            borderRadius: 10, padding: "10px 22px", fontSize: 14, fontWeight: 600,
-            cursor: "pointer", transition: "all 0.2s",
+            borderRadius: 12, padding: "14px", fontSize: 15, fontWeight: 700,
+            cursor: "pointer", marginTop: 8, width: "100%",
           }}>Essai gratuit</button>
         </div>
-      </nav>
+      )}
 
       {/* ═══ HERO ═══ */}
       <section style={{
@@ -414,31 +454,22 @@ export default function KotaLanding() {
           background: K.gradientCard, border: `1px solid ${K.darkBorder}`,
           borderRadius: 20, padding: "40px 32px", maxWidth: 800, margin: "0 auto",
         }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr", gap: 20, alignItems: "center" }}>
-            {/* Avant */}
-            <div style={{ textAlign: "center" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 20, alignItems: "center" }}>
+            <div style={{ textAlign: "center", minWidth: 140 }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: K.grayLight, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 10 }}>Sans Kōta</div>
-              <div style={{ fontSize: 40, fontWeight: 900, color: "#ef4444", lineHeight: 1 }}>−1100€</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: "#ef4444", lineHeight: 1 }}>-1100€</div>
               <div style={{ fontSize: 12, color: K.grayLight, marginTop: 8 }}>perdus par mois</div>
             </div>
-
-            {/* Plus */}
             <div style={{ fontSize: 24, color: K.grayLight, fontWeight: 300 }}>+</div>
-
-            {/* Kōta */}
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", minWidth: 140 }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: K.accentLight, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 10 }}>Kōta Pro</div>
-              <div style={{ fontSize: 40, fontWeight: 900, color: K.white, lineHeight: 1 }}>−40€</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: K.white, lineHeight: 1 }}>-40€</div>
               <div style={{ fontSize: 12, color: K.grayLight, marginTop: 8 }}>d'abonnement</div>
             </div>
-
-            {/* Equals */}
             <div style={{ fontSize: 24, color: K.grayLight, fontWeight: 300 }}>=</div>
-
-            {/* Résultat */}
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", minWidth: 140 }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: K.green, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 10 }}>Économie nette</div>
-              <div style={{ fontSize: 40, fontWeight: 900, color: K.green, lineHeight: 1 }}>+1060€</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: K.green, lineHeight: 1 }}>+1060€</div>
               <div style={{ fontSize: 12, color: K.grayLight, marginTop: 8 }}>par mois</div>
             </div>
           </div>
