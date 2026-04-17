@@ -179,13 +179,13 @@ export default function KotaLanding() {
       }}>
         {/* Background grid */}
         <div style={{
-          position: "absolute", inset: 0, opacity: 0.04,
+          position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none",
           backgroundImage: `linear-gradient(${K.accent} 1px, transparent 1px), linear-gradient(90deg, ${K.accent} 1px, transparent 1px)`,
           backgroundSize: "60px 60px",
         }} />
         {/* Glow orbs */}
-        <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${K.accent}15, transparent 70%)`, top: "10%", left: "10%", filter: "blur(80px)" }} />
-        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, #8b5cf615, transparent 70%)`, bottom: "10%", right: "10%", filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${K.accent}15, transparent 70%)`, top: "10%", left: "10%", filter: "blur(80px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, #8b5cf615, transparent 70%)`, bottom: "10%", right: "10%", filter: "blur(60px)", pointerEvents: "none" }} />
 
         {/* Badge */}
         <div style={{
@@ -740,7 +740,7 @@ export default function KotaLanding() {
         padding: "100px 24px", textAlign: "center", position: "relative",
         background: K.darkSurface,
       }}>
-        <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: `radial-gradient(circle, ${K.accent}08, transparent 70%)`, top: "50%", left: "50%", transform: "translate(-50%, -50%)", filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: `radial-gradient(circle, ${K.accent}08, transparent 70%)`, top: "50%", left: "50%", transform: "translate(-50%, -50%)", filter: "blur(60px)", pointerEvents: "none" }} />
         <div style={{ position: "relative" }}>
           <h2 style={{ fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 900, letterSpacing: "-1px", marginBottom: 16 }}>
             Prêt à gagner du temps ?
