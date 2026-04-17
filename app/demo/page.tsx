@@ -240,7 +240,7 @@ export default function Kota() {
   const markSent = (devisId) => { setDevisList(dl=>dl.map(d=>d.id===devisId?{...d,status:"envoyé"}:d)); };
 
   return (
-    <div style={{fontFamily:"'Outfit',sans-serif",background:"#060910",color:K.white,height:"100vh",display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div style={{fontFamily:"'Outfit',sans-serif",background:K.dark,color:K.white,height:"100vh",display:"flex",justifyContent:"center"}}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
       <style>{`
         *{box-sizing:border-box;margin:0}
@@ -255,9 +255,8 @@ export default function Kota() {
         .msg-enter{animation:slideUp .3s ease both}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:${K.border};border-radius:4px}
         input,textarea,select,button{font-family:'Outfit',sans-serif}
-        @media (max-width: 500px) { .app-frame { width:100% !important; height:100vh !important; border-radius:0 !important; border:none !important; box-shadow:none !important; } }
       `}</style>
-      <div className="app-frame" style={{width:430,height:"92vh",background:K.dark,borderRadius:24,border:`1px solid ${K.border}`,boxShadow:"0 20px 80px rgba(0,0,0,0.6)",display:"flex",flexDirection:"column",overflow:"hidden",position:"relative"}}>
+      <div style={{width:"100%",maxWidth:900,height:"100vh",display:"flex",flexDirection:"column",overflow:"hidden",borderLeft:`1px solid ${K.border}`,borderRight:`1px solid ${K.border}`}}>
 
       {sendModal && <SendModal devis={sendModal} profile={profile} onClose={()=>setSendModal(null)} onSend={()=>{markSent(sendModal.id);}}/>}
 
