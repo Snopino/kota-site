@@ -419,15 +419,21 @@ export default function KotaLanding() {
               { num: "02", title: "L'IA génère le devis", desc: "Lignes détaillées, bons prix, bonnes unités, mentions légales. Basé sur vos tarifs personnels et vos prestations enregistrées.", color: K.green },
               { num: "03", title: "Envoyez au client", desc: "Un clic pour envoyer par email ou partager un lien. Le client visualise, accepte et signe en ligne.", color: K.orange },
             ].map((step, i) => (
-              <div key={step.num} id={`step-${i}`} data-reveal style={{
+              <div key={step.num} id={`step-${i}`} data-reveal className="step-hover" style={{
                 ...reveal(`step-${i}`, i * 0.15),
                 display: "flex", gap: 24, alignItems: "flex-start",
-              }}>
-                <div style={{
+                padding: "24px 20px", borderRadius: 16,
+                transition: "all 0.3s ease",
+                cursor: "default",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${step.color}10`; e.currentTarget.style.boxShadow = `0 0 30px ${step.color}15`; e.currentTarget.querySelector('.step-num').style.color = step.color; e.currentTarget.querySelector('.step-bar').style.borderColor = step.color; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector('.step-num').style.color = `${step.color}20`; e.currentTarget.querySelector('.step-bar').style.borderColor = `${step.color}30`; }}
+              >
+                <div className="step-num" style={{
                   fontSize: 48, fontWeight: 900, color: `${step.color}20`, fontFamily: "'JetBrains Mono', monospace",
-                  lineHeight: 1, minWidth: 70, textAlign: "right",
+                  lineHeight: 1, minWidth: 70, textAlign: "right", transition: "color 0.3s ease",
                 }}>{step.num}</div>
-                <div style={{ borderLeft: `2px solid ${step.color}30`, paddingLeft: 24, paddingBottom: 8 }}>
+                <div className="step-bar" style={{ borderLeft: `2px solid ${step.color}30`, paddingLeft: 24, paddingBottom: 8, transition: "border-color 0.3s ease" }}>
                   <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>{step.title}</h3>
                   <p style={{ fontSize: 15, color: K.gray, lineHeight: 1.7 }}>{step.desc}</p>
                 </div>
