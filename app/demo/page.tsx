@@ -240,7 +240,7 @@ export default function Kota() {
   const markSent = (devisId) => { setDevisList(dl=>dl.map(d=>d.id===devisId?{...d,status:"envoyé"}:d)); };
 
   return (
-    <div style={{fontFamily:"'Outfit',sans-serif",background:K.dark,color:K.white,height:"100vh",display:"flex",justifyContent:"center"}}>
+    <div style={{fontFamily:"'Outfit',sans-serif",background:K.dark,color:K.white,height:"100vh",display:"flex",overflow:"hidden"}}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
       <style>{`
         *{box-sizing:border-box;margin:0}
@@ -255,32 +255,92 @@ export default function Kota() {
         .msg-enter{animation:slideUp .3s ease both}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:${K.border};border-radius:4px}
         input,textarea,select,button{font-family:'Outfit',sans-serif}
+        .sidebar-btn{transition:all .15s ease}
+        .sidebar-btn:hover{background:${K.surface} !important}
       `}</style>
-      <div style={{width:"100%",maxWidth:900,height:"100vh",display:"flex",flexDirection:"column",overflow:"hidden",borderLeft:`1px solid ${K.border}`,borderRight:`1px solid ${K.border}`}}>
 
       {sendModal && <SendModal devis={sendModal} profile={profile} onClose={()=>setSendModal(null)} onSend={()=>{markSent(sendModal.id);}}/>}
 
-      {!onboarded ? <Onboarding profile={profile} setProfile={setProfile} step={obStep} setStep={setObStep} onComplete={()=>setOnboarded(true)}/> : (<>
-        <div style={{flex:1,overflow:"hidden"}}>
-          <div style={{display:tab==="home"?"flex":"none",flexDirection:"column",height:"100%"}}>
-            <HomePage profile={profile} prestas={prestas} devisList={devisList} setDevisList={setDevisList} openDevis={openDevis} openDevisPdf={openDevisPdf} onSendDevis={d=>setSendModal(d)}/>
-          </div>
-          {tab==="devis" && <DevisListPage devisList={devisList} openDevis={openDevis} profile={profile} onCompta={()=>setTab("compta")}/>}
-          {tab==="edit" && editDevis && <EditPage devis={editDevis} prestas={prestas} saveDevis={saveDevis} onBack={backFromEdit} profile={profile} onSend={d=>setSendModal(d)} pdfDirect={pdfDirect}/>}
-          {tab==="compta" && <ComptaPage devisList={devisList} profile={profile} onBack={()=>setTab("devis")}/>}
-          {tab==="settings" && <SettingsPage profile={profile} setProfile={setProfile} prestas={prestas} setPrestas={setPrestas}/>}
+      {!onboarded ? (
+        <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <Onboarding profile={profile} setProfile={setProfile} step={obStep} setStep={setObStep} onComplete={()=>setOnboarded(true)}/>
         </div>
-        {tab!=="edit" && tab!=="compta" && (
-          <nav style={{display:"flex",background:K.card,borderTop:`1px solid ${K.border}`,padding:"6px 0 env(safe-area-inset-bottom,6px)",flexShrink:0}}>
-            {[{key:"home",icon:ICONS.sparkle,label:"Assistant"},{key:"devis",icon:ICONS.file,label:"Mes devis"},{key:"settings",icon:ICONS.settings,label:"Réglages"}].map(t=>(
-              <button key={t.key} onClick={()=>setTab(t.key)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 0",border:"none",background:"none",cursor:"pointer",color:tab===t.key?K.accent:K.grayLight}}>
-                <Ic d={t.icon} size={22} color={tab===t.key?K.accent:K.grayLight} sw={tab===t.key?2.2:1.5}/><span style={{fontSize:11,fontWeight:tab===t.key?600:400}}>{t.label}</span>
+      ) : (<>
+        {/* SIDEBAR */}
+        <div style={{width:240,flexShrink:0,background:K.card,borderRight:`1px solid ${K.border}`,display:"flex",flexDirection:"column",height:"100vh"}}>
+          {/* Logo */}
+          <div style={{padding:"20px 20px 16px",display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:36,height:36,background:K.gradient,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:900}}>K</div>
+            <div>
+              <div style={{fontWeight:700,fontSize:16}}>Kōta</div>
+              <div style={{fontSize:11,color:K.green}}>● En ligne</div>
+            </div>
+          </div>
+
+          {/* Nav items */}
+          <div style={{flex:1,padding:"8px 10px",display:"flex",flexDirection:"column",gap:2}}>
+            {[
+              {key:"home",icon:ICONS.sparkle,label:"Assistant"},
+              {key:"devis",icon:ICONS.file,label:"Mes devis"},
+              {key:"settings",icon:ICONS.settings,label:"Réglages"},
+            ].map(t=>(
+              <button key={t.key} className="sidebar-btn" onClick={()=>setTab(t.key)} style={{
+                display:"flex",alignItems:"center",gap:12,padding:"12px 14px",
+                border:"none",borderRadius:10,cursor:"pointer",width:"100%",textAlign:"left",
+                background:tab===t.key?K.surface:"transparent",
+                color:tab===t.key?K.white:K.grayLight,
+                fontSize:14,fontWeight:tab===t.key?600:400,
+              }}>
+                <Ic d={t.icon} size={20} color={tab===t.key?K.accent:K.grayLight} sw={tab===t.key?2.2:1.5}/>
+                {t.label}
               </button>
             ))}
-          </nav>
-        )}
+          </div>
+
+          {/* Stats */}
+          <div style={{padding:"12px 14px",borderTop:`1px solid ${K.border}`}}>
+            <div style={{display:"flex",gap:8,marginBottom:12}}>
+              {[
+                {l:"En attente",v:devisList.filter(d=>d.status==="envoyé"||d.status==="brouillon").length},
+                {l:"Acceptés",v:devisList.filter(d=>d.status==="accepté").length},
+              ].map(s=>(
+                <div key={s.l} style={{flex:1,background:K.surface,borderRadius:8,padding:"8px 10px",textAlign:"center"}}>
+                  <div style={{fontSize:18,fontWeight:800}}>{s.v}</div>
+                  <div style={{fontSize:10,color:K.grayLight}}>{s.l}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{background:K.surface,borderRadius:8,padding:"8px 10px",textAlign:"center"}}>
+              <div style={{fontSize:18,fontWeight:800,color:K.green}}>{fmtEur(devisList.filter(d=>d.status==="accepté").reduce((s,d)=>s+d.total_ttc,0))}</div>
+              <div style={{fontSize:10,color:K.grayLight}}>CA total</div>
+            </div>
+          </div>
+
+          {/* Company info */}
+          <div style={{padding:"14px",borderTop:`1px solid ${K.border}`,display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:32,height:32,borderRadius:8,background:K.gradient,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,flexShrink:0}}>
+              {profile.company_name.split(" ").map(n=>n[0]).join("").slice(0,2)}
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:13,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{profile.company_name}</div>
+              <div style={{fontSize:11,color:K.grayLight}}>{profile.forme_juridique}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* MAIN CONTENT */}
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div style={{flex:1,overflow:"hidden"}}>
+            <div style={{display:tab==="home"?"flex":"none",flexDirection:"column",height:"100%"}}>
+              <HomePage profile={profile} prestas={prestas} devisList={devisList} setDevisList={setDevisList} openDevis={openDevis} openDevisPdf={openDevisPdf} onSendDevis={d=>setSendModal(d)}/>
+            </div>
+            {tab==="devis" && <DevisListPage devisList={devisList} openDevis={openDevis} profile={profile} onCompta={()=>setTab("compta")}/>}
+            {tab==="edit" && editDevis && <EditPage devis={editDevis} prestas={prestas} saveDevis={saveDevis} onBack={backFromEdit} profile={profile} onSend={d=>setSendModal(d)} pdfDirect={pdfDirect}/>}
+            {tab==="compta" && <ComptaPage devisList={devisList} profile={profile} onBack={()=>setTab("devis")}/>}
+            {tab==="settings" && <SettingsPage profile={profile} setProfile={setProfile} prestas={prestas} setPrestas={setPrestas}/>}
+          </div>
+        </div>
       </>)}
-      </div>
     </div>
   );
 }
