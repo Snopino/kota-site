@@ -68,6 +68,11 @@ export default function KotaLanding() {
 
   const handleSubmit = () => {
     if (email.includes("@")) {
+      fetch("https://formspree.io/f/mqewbend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
       setSubmitted(true);
     }
   };
