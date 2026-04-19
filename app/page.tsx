@@ -517,7 +517,7 @@ export default function KotaLanding() {
           <p style={{ fontSize: 16, color: K.gray, marginTop: 12 }}>Gratuit pour tester. Pas d'engagement. Résiliable en un clic.</p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, maxWidth: 1100, margin: "0 auto", alignItems: "center" }}>
           {/* Starter */}
           <div className="hover-lift" style={{
             background: K.gradientCard, border: `1px solid ${K.darkBorder}`,
@@ -547,8 +547,10 @@ export default function KotaLanding() {
           {/* Pro */}
           <div className="hover-lift" style={{
             background: K.gradientCard, border: `2px solid ${K.accent}`,
-            borderRadius: 20, padding: 32, position: "relative", overflow: "hidden",
-            boxShadow: `0 0 40px ${K.accent}20`,
+            borderRadius: 20, padding: "44px 32px", position: "relative", overflow: "hidden",
+            boxShadow: `0 0 60px ${K.accent}40, 0 20px 60px rgba(59,130,246,0.15)`,
+            transform: "scale(1.05)",
+            zIndex: 2,
           }}>
             <div style={{ position: "absolute", top: 16, right: 16, background: K.gradientMain, borderRadius: 100, padding: "4px 12px", fontSize: 11, fontWeight: 700 }}>POPULAIRE</div>
             <div style={{ fontSize: 14, fontWeight: 600, color: K.accentLight, marginBottom: 8 }}>Pro</div>
