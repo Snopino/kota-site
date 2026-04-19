@@ -660,44 +660,44 @@ export default function KotaLanding() {
         </div>
       </section>
 
-      {/* ═══ TÉMOIGNAGES ═══ */}
-      <section id="temoignages" data-reveal style={{ padding: "100px 24px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ ...reveal("temoignages"), textAlign: "center", marginBottom: 56 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: K.pink, textTransform: "uppercase", letterSpacing: "2px" }}>Témoignages</span>
+      {/* ═══ HISTOIRE ═══ */}
+      <section id="histoire" data-reveal style={{ padding: "100px 24px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ ...reveal("histoire"), textAlign: "center", marginBottom: 48 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: K.pink, textTransform: "uppercase", letterSpacing: "2px" }}>L'histoire</span>
           <h2 style={{ fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 800, marginTop: 12, letterSpacing: "-1px" }}>
-            Ils ont testé Kōta.
+            Pourquoi j'ai créé Kōta.
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
-          {[
-            { name: "Jean-Pierre M.", job: "Plombier — Nice", quote: "Avant je passais mes dimanches à faire les devis de la semaine. Maintenant c'est plié en 2 minutes sur le chantier. Ma femme me remercie.", stars: 5 },
-            { name: "Karim B.", job: "Plombier-chauffagiste — Lyon", quote: "Le truc qui m'a bluffé c'est les mentions légales. J'avais jamais l'assurance décennale sur mes devis, je savais même pas que c'était obligatoire.", stars: 5 },
-            { name: "Sophie L.", job: "Comptable — Cabinet Azur", quote: "Mon client plombier m'envoyait des photos de devis par WhatsApp. Maintenant j'ai un tableau avec export CSV. Ça me change la vie.", stars: 5 },
-          ].map((t) => (
-            <div key={t.name} className="hover-lift" style={{
-              background: K.gradientCard, border: `1px solid ${K.darkBorder}`,
-              borderRadius: 16, padding: 28,
-            }}>
-              <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
-                {Array.from({ length: t.stars }).map((_, i) => (
-                  <svg key={i} width="18" height="18" viewBox="0 0 24 24" fill={K.orange} stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-                ))}
-              </div>
-              <p style={{ fontSize: 15, color: K.gray, lineHeight: 1.7, marginBottom: 20, fontStyle: "italic" }}>
-                "{t.quote}"
-              </p>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: K.gradientMain, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14 }}>
-                  {t.name.split(" ").map(n => n[0]).join("")}
-                </div>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 14 }}>{t.name}</div>
-                  <div style={{ fontSize: 12, color: K.grayLight }}>{t.job}</div>
-                </div>
-              </div>
+        <div className="hover-lift" style={{
+          background: K.gradientCard, border: `1px solid ${K.darkBorder}`,
+          borderRadius: 20, padding: "40px 36px", position: "relative",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
+            <div style={{ width: 56, height: 56, borderRadius: 14, background: K.gradientMain, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, flexShrink: 0 }}>HT</div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 18 }}>Hugo Theys</div>
+              <div style={{ fontSize: 13, color: K.accentLight }}>Fondateur de Kōta</div>
             </div>
-          ))}
+          </div>
+
+          <div style={{ fontSize: 16, color: K.gray, lineHeight: 1.9 }}>
+            <p style={{ marginBottom: 20 }}>
+              Je ne sais pas coder. Mon parcours, c'est le sport management, l'esport, la communication digitale. Pendant des années, j'ai eu des idées de produits sans jamais pouvoir les construire.
+            </p>
+            <p style={{ marginBottom: 20 }}>
+              Et puis un jour, j'ai regardé un artisan passer <strong style={{ color: K.white }}>45 minutes à rédiger un devis sur Word</strong>. Un document que 80% des artisans font mal — mentions légales oubliées, erreurs de calcul, mise en page bancale.
+            </p>
+            <p style={{ marginBottom: 20 }}>
+              Je me suis dit : on a des IA qui écrivent des dissertations en 10 secondes, mais un plombier doit encore se battre avec Excel pour facturer un remplacement de siphon ?
+            </p>
+            <p style={{ marginBottom: 20 }}>
+              Grâce à l'intelligence artificielle, j'ai pu construire ce que j'avais en tête. <strong style={{ color: K.white }}>Pas parfaitement. Pas comme un dev senior le ferait. Mais ça marche.</strong> Et c'est conforme légalement.
+            </p>
+            <p style={{ color: K.accentLight, fontWeight: 600, fontSize: 17 }}>
+              Kōta, c'est l'outil que j'aurais voulu voir exister. Alors je l'ai construit.
+            </p>
+          </div>
         </div>
       </section>
 
