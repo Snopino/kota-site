@@ -928,6 +928,9 @@ function ComptaPage({devisList,profile,onBack}){
   const [period,setPeriod]=useState("all");
   const [statusF,setStatusF]=useState("all");
   const [csvDone,setCsvDone]=useState(false);
+  const [shareOpen,setShareOpen]=useState(false);
+  const [copied,setCopied]=useState(false);
+  const shareLink = typeof window !== "undefined" ? window.location.origin + "/compta" : "https://kota-site.vercel.app/compta";
   const periods=[{k:"all",l:"Tout"},{k:"2026-01",l:"Janvier"},{k:"2026-02",l:"Février"},{k:"2026-03",l:"Mars"},{k:"2026-04",l:"Avril"}];
   const statuses=[{k:"all",l:"Tous"},{k:"accepté",l:"Acceptés"},{k:"envoyé",l:"Envoyés"},{k:"brouillon",l:"Brouillons"}];
   const stColors={brouillon:{bg:"#f59e0b20",t:"#f59e0b"},"envoyé":{bg:"#3b82f620",t:"#60a5fa"},"accepté":{bg:"#10b98120",t:"#10b981"},"refusé":{bg:"#ef444420",t:"#ef4444"}};
@@ -955,8 +958,59 @@ function ComptaPage({devisList,profile,onBack}){
           <div style={{fontWeight:700,fontSize:16}}>Espace comptable</div>
           <div style={{fontSize:12,color:K.grayLight}}>{profile.company_name} — Lecture seule</div>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:8,height:8,borderRadius:"50%",background:K.green}}/><span style={{fontSize:12,color:K.grayLight}}>Lecture seule</span></div>
+        <button onClick={()=>setShareOpen(true)} style={{padding:"8px 14px",borderRadius:10,border:"none",background:K.gradient,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
+          <Ic d={ICONS.send} size={14} color="#fff"/> Partager à mon comptable
+        </button>
       </div>
+
+      {/* Share Modal */}
+      {shareOpen && (
+        <div onClick={()=>setShareOpen(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",backdropFilter:"blur(8px)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:20,padding:32,maxWidth:520,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.6)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
+              <div style={{width:44,height:44,borderRadius:12,background:K.accentGlow,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <Ic d={ICONS.send} size={22} color={K.accent}/>
+              </div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:18,fontWeight:700}}>Partager avec votre comptable</div>
+                <div style={{fontSize:13,color:K.grayLight,marginTop:2}}>Accès direct, sans création de compte</div>
+              </div>
+              <button onClick={()=>setShareOpen(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
+                <Ic d={ICONS.x} size={22} color={K.grayLight}/>
+              </button>
+            </div>
+
+            <div style={{padding:"16px 18px",background:K.surface,borderRadius:12,border:`1px solid ${K.border}`,marginBottom:16}}>
+              <div style={{fontSize:11,fontWeight:600,color:K.grayLight,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>Lien sécurisé</div>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <div style={{flex:1,fontSize:14,fontFamily:"monospace",color:K.accentLight,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{shareLink}</div>
+                <button onClick={()=>{navigator.clipboard.writeText(shareLink);setCopied(true);setTimeout(()=>setCopied(false),2000);}} style={{padding:"8px 14px",borderRadius:8,border:"none",background:copied?K.green:K.gradient,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:6}}>
+                  {copied ? <>✓ Copié !</> : <>📋 Copier</>}
+                </button>
+              </div>
+            </div>
+
+            <div style={{marginBottom:20}}>
+              <div style={{fontSize:13,fontWeight:600,color:K.white,marginBottom:10}}>Ce que votre comptable pourra faire :</div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {["Consulter tous vos devis en lecture seule","Filtrer par période (mois, trimestre, année)","Exporter en CSV pour sa compta","Télécharger tous les PDF en un clic"].map(t=>(
+                  <div key={t} style={{display:"flex",alignItems:"center",gap:10,fontSize:13,color:K.gray}}>
+                    <div style={{width:18,height:18,borderRadius:"50%",background:`${K.green}20`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={K.green} strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{padding:"12px 14px",background:`${K.accent}10`,border:`1px solid ${K.accent}30`,borderRadius:10,fontSize:12,color:K.gray,display:"flex",alignItems:"flex-start",gap:8}}>
+              <span style={{fontSize:16,flexShrink:0}}>🔒</span>
+              <span>Votre comptable n'a aucun droit de modification. Vous pouvez révoquer l'accès à tout moment depuis vos réglages.</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{padding:"16px 20px 24px"}}>
         {/* Stats */}
