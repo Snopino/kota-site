@@ -308,19 +308,11 @@ export default function KotaLanding() {
           </div>
         </div>
 
-        {/* Social proof */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 40, flexWrap: "wrap", justifyContent: "center" }}>
-          <div style={{ display: "flex" }}>
-            {["#3b82f6", "#10b981", "#f59e0b", "#ec4899", "#8b5cf6"].map((c, i) => (
-              <div key={i} style={{
-                width: 32, height: 32, borderRadius: "50%", background: c, border: `2px solid ${K.dark}`,
-                marginLeft: i > 0 ? -8 : 0, display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 12, fontWeight: 700, color: "#fff",
-              }}>{String.fromCharCode(65 + i)}</div>
-            ))}
-          </div>
-          <span style={{ fontSize: 14, color: K.grayLight }}>
-            Rejoint par <strong style={{ color: K.white }}>200+</strong> artisans en France
+        {/* Beta launch */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 40, flexWrap: "wrap", justifyContent: "center", padding: "10px 20px", background: `${K.accent}10`, border: `1px solid ${K.accent}30`, borderRadius: 100 }}>
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: K.green, animation: "pulse-glow 2s ease infinite" }} />
+          <span style={{ fontSize: 14, color: K.gray }}>
+            <strong style={{ color: K.white }}>Bêta privée ouverte</strong> — Soyez parmi les premiers à tester
           </span>
         </div>
       </section>
@@ -674,28 +666,25 @@ export default function KotaLanding() {
           borderRadius: 20, padding: "40px 36px", position: "relative",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
-            <div style={{ width: 56, height: 56, borderRadius: 14, background: K.gradientMain, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, flexShrink: 0 }}>HT</div>
+            <div style={{ width: 56, height: 56, borderRadius: 14, background: K.gradientMain, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, flexShrink: 0 }}>H</div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 18 }}>Hugo Theys</div>
+              <div style={{ fontWeight: 700, fontSize: 18 }}>Hugo</div>
               <div style={{ fontSize: 13, color: K.accentLight }}>Fondateur de Kōta</div>
             </div>
           </div>
 
           <div style={{ fontSize: 16, color: K.gray, lineHeight: 1.9 }}>
             <p style={{ marginBottom: 20 }}>
-              Je ne sais pas coder. Mon parcours, c'est le sport management, l'esport, la communication digitale. Pendant des années, j'ai eu des idées de produits sans jamais pouvoir les construire.
+              Les artisans construisent nos maisons. Réparent nos urgences. Sauvent nos chantiers. Ils ont les mains, le savoir-faire, la fierté du métier bien fait.
             </p>
             <p style={{ marginBottom: 20 }}>
-              Et puis un jour, j'ai regardé un artisan passer <strong style={{ color: K.white }}>45 minutes à rédiger un devis sur Word</strong>. Un document que 80% des artisans font mal — mentions légales oubliées, erreurs de calcul, mise en page bancale.
+              <strong style={{ color: K.white }}>Ils n'ont pas appris ce métier pour faire de l'administratif.</strong> Ils l'ont appris pour leurs mains. Pour la satisfaction d'un travail propre. Pour entendre un client dire "merci, c'est nickel".
             </p>
             <p style={{ marginBottom: 20 }}>
-              Je me suis dit : on a des IA qui écrivent des dissertations en 10 secondes, mais un plombier doit encore se battre avec Excel pour facturer un remplacement de siphon ?
-            </p>
-            <p style={{ marginBottom: 20 }}>
-              Grâce à l'intelligence artificielle, j'ai pu construire ce que j'avais en tête. <strong style={{ color: K.white }}>Pas parfaitement. Pas comme un dev senior le ferait. Mais ça marche.</strong> Et c'est conforme légalement.
+              Kōta, c'est ma façon de leur rendre les heures que la paperasse leur vole. Pour qu'ils retrouvent du temps. Pour leur famille. Pour leurs chantiers. Pour ce qui compte vraiment.
             </p>
             <p style={{ color: K.accentLight, fontWeight: 600, fontSize: 17 }}>
-              Kōta, c'est l'outil que j'aurais voulu voir exister. Alors je l'ai construit.
+              Les artisans méritent des outils à la hauteur de leur métier.
             </p>
           </div>
         </div>
