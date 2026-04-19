@@ -103,6 +103,7 @@ export default function KotaLanding() {
           .nav-links { display: none !important; }
           .nav-cta-desktop { display: none !important; }
           .hamburger { display: flex !important; }
+          .pro-card { transform: scale(1) !important; padding: 32px !important; }
         }
         @media (min-width: 769px) {
           .hamburger { display: none !important; }
@@ -545,7 +546,7 @@ export default function KotaLanding() {
           </div>
 
           {/* Pro */}
-          <div className="hover-lift" style={{
+          <div className="hover-lift pro-card" style={{
             background: K.gradientCard, border: `2px solid ${K.accent}`,
             borderRadius: 20, padding: "44px 32px", position: "relative", overflow: "hidden",
             boxShadow: `0 0 60px ${K.accent}40, 0 20px 60px rgba(59,130,246,0.15)`,
