@@ -227,22 +227,30 @@ export default function KotaLanding() {
 
         {/* CTA */}
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 48 }}>
-          <button onClick={()=>setShowDemoModal(true)} style={{
-            background: K.gradientMain, color: "#fff", border: "none",
-            borderRadius: 14, padding: "16px 36px", fontSize: 17, fontWeight: 700,
-            cursor: "pointer", display: "flex", alignItems: "center", gap: 10,
-            boxShadow: `0 8px 32px ${K.accent}30`,
-            transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-          }}>
+          <button
+            onClick={()=>setShowDemoModal(true)}
+            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px) scale(1.03)";e.currentTarget.style.boxShadow=`0 14px 40px ${K.accent}50`;}}
+            onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0) scale(1)";e.currentTarget.style.boxShadow=`0 8px 32px ${K.accent}30`;}}
+            style={{
+              background: K.gradientMain, color: "#fff", border: "none",
+              borderRadius: 14, padding: "16px 36px", fontSize: 17, fontWeight: 700,
+              cursor: "pointer", display: "flex", alignItems: "center", gap: 10,
+              boxShadow: `0 8px 32px ${K.accent}30`,
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}>
             Commencer gratuitement
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </button>
-          <button onClick={()=>window.location.href="/demo"} style={{
-            background: "transparent", color: K.white, border: `1px solid ${K.darkBorder}`,
-            borderRadius: 14, padding: "16px 32px", fontSize: 17, fontWeight: 600,
-            cursor: "pointer", display: "flex", alignItems: "center", gap: 10,
-            transition: "all 0.2s",
-          }}>
+          <button
+            onClick={()=>window.location.href="/demo"}
+            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px) scale(1.03)";e.currentTarget.style.borderColor=K.accent;e.currentTarget.style.background=`${K.accent}10`;}}
+            onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0) scale(1)";e.currentTarget.style.borderColor=K.darkBorder;e.currentTarget.style.background="transparent";}}
+            style={{
+              background: "transparent", color: K.white, border: `1px solid ${K.darkBorder}`,
+              borderRadius: 14, padding: "16px 32px", fontSize: 17, fontWeight: 600,
+              cursor: "pointer", display: "flex", alignItems: "center", gap: 10,
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill={K.accent} stroke="none"><polygon points="5 3 19 12 5 21 5 3" /></svg>
             Voir la démo
           </button>
