@@ -222,7 +222,7 @@ export default function KotaLanding() {
           fontSize: "clamp(16px, 2vw, 20px)", color: K.gray, textAlign: "center",
           maxWidth: 580, lineHeight: 1.7, marginBottom: 40,
         }}>
-          Décrivez votre chantier. L'IA génère un devis conforme, détaillé et prêt à envoyer. Conçu pour les plombiers. Bientôt pour tous les artisans.
+          Décrivez votre chantier. L'IA génère un devis conforme, détaillé et prêt à envoyer.
         </p>
 
         {/* CTA */}
