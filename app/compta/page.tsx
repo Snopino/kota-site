@@ -236,11 +236,12 @@ function Kota() {
   const [tourActive,setTourActive] = useState(false);
   const [tourStep,setTourStep] = useState(0);
 
-  // Tour se lance auto après onboarding si jamais fait
+  // Tour se lance auto après onboarding si jamais fait (desktop uniquement)
   useEffect(()=>{
     if(onboarded){
       const done = typeof window!=="undefined" ? window.localStorage.getItem("kota_tour_done") : null;
-      if(!done){ setTimeout(()=>setTourActive(true), 800); }
+      const isMobile = typeof window!=="undefined" && window.innerWidth < 769;
+      if(!done && !isMobile){ setTimeout(()=>setTourActive(true), 800); }
     }
   },[onboarded]);
 
@@ -1208,16 +1209,11 @@ function ComptaPage({devisList,profile,onBack}){
 
 function ComptaStandalone() {
   const profile = {
-    company_name: "Durand Plomberie",
-    forme_juridique: "EI",
-    siret: "812 345 678 00012",
-    rm: "812 345 678 RM 06",
-    address: "24 rue des Oliviers, 06100 Nice",
-    phone: "06 12 34 56 78",
-    email: "contact@durand-plomberie.fr",
-    tva: "FR 32 812345678",
-    assurance: "MAAF Pro n° 2458791",
-    validite_devis: 30,
+    company_name: "Durand Plomberie", forme_juridique: "EI",
+    siret: "812 345 678 00012", rm: "812 345 678 RM 06",
+    address: "24 rue des Oliviers, 06100 Nice", phone: "06 12 34 56 78",
+    email: "contact@durand-plomberie.fr", tva: "FR 32 812345678",
+    assurance: "MAAF Pro n° 2458791", validite_devis: 30,
   };
   return (
     <div style={{fontFamily:"'Outfit',sans-serif",background:K.dark,color:K.white,height:"100vh",display:"flex",flexDirection:"column",overflow:"hidden"}}>

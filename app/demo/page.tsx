@@ -236,11 +236,12 @@ export default function Kota() {
   const [tourActive,setTourActive] = useState(false);
   const [tourStep,setTourStep] = useState(0);
 
-  // Tour se lance auto après onboarding si jamais fait
+  // Tour se lance auto après onboarding si jamais fait (desktop uniquement)
   useEffect(()=>{
     if(onboarded){
       const done = typeof window!=="undefined" ? window.localStorage.getItem("kota_tour_done") : null;
-      if(!done){ setTimeout(()=>setTourActive(true), 800); }
+      const isMobile = typeof window!=="undefined" && window.innerWidth < 769;
+      if(!done && !isMobile){ setTimeout(()=>setTourActive(true), 800); }
     }
   },[onboarded]);
 
