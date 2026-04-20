@@ -233,6 +233,35 @@ function Kota() {
   const [sendModal,setSendModal] = useState(null);
 
   const [pdfDirect,setPdfDirect] = useState(false);
+  const [tourActive,setTourActive] = useState(false);
+  const [tourStep,setTourStep] = useState(0);
+
+  // Tour se lance auto après onboarding si jamais fait
+  useEffect(()=>{
+    if(onboarded){
+      const done = typeof window!=="undefined" ? window.localStorage.getItem("kota_tour_done") : null;
+      if(!done){ setTimeout(()=>setTourActive(true), 800); }
+    }
+  },[onboarded]);
+
+  const tourSteps = [
+    { target: "sidebar-assistant", title: "Parlez à Kōta", desc: "Décrivez votre chantier en langage naturel, comme à un collègue. Kōta génère le devis en 30 secondes." },
+    { target: "sidebar-devis", title: "Tous vos devis", desc: "Retrouvez l'historique complet, filtrable par statut (brouillon, envoyé, accepté)." },
+    { target: "sidebar-stats", title: "Suivez votre activité", desc: "Devis en attente, acceptés, et CA total en direct sur votre tableau de bord." },
+    { target: "sidebar-settings", title: "Personnalisez Kōta", desc: "Vos tarifs, vos prestations, votre logo. Tout est modifiable dans Réglages." },
+  ];
+
+  const nextTour = () => { if(tourStep<tourSteps.length-1) setTourStep(tourStep+1); else endTour(); };
+  const endTour = () => {
+    setTourActive(false);
+    setTourStep(0);
+    if(typeof window!=="undefined") window.localStorage.setItem("kota_tour_done","1");
+  };
+  const restartTour = () => {
+    if(typeof window!=="undefined") window.localStorage.removeItem("kota_tour_done");
+    setTourStep(0); setTourActive(true);
+  };
+
   const openDevis = (d) => { setEditDevis(d); setPrevTab(tab); setTab("edit"); setPdfDirect(false); };
   const openDevisPdf = (d) => { setEditDevis(d); setPrevTab(tab); setTab("edit"); setPdfDirect(true); };
   const saveDevis = (d) => { const i=devisList.findIndex(x=>x.id===d.id); if(i>=0){const u=[...devisList];u[i]=d;setDevisList(u);}else setDevisList([...devisList,d]); setTab(prevTab); };
@@ -287,16 +316,17 @@ function Kota() {
           {/* Nav items */}
           <div style={{flex:1,padding:"8px 10px",display:"flex",flexDirection:"column",gap:2}}>
             {[
-              {key:"home",icon:ICONS.sparkle,label:"Assistant"},
-              {key:"devis",icon:ICONS.file,label:"Mes devis"},
-              {key:"settings",icon:ICONS.settings,label:"Réglages"},
+              {key:"home",icon:ICONS.sparkle,label:"Assistant",tourId:"sidebar-assistant"},
+              {key:"devis",icon:ICONS.file,label:"Mes devis",tourId:"sidebar-devis"},
+              {key:"settings",icon:ICONS.settings,label:"Réglages",tourId:"sidebar-settings"},
             ].map(t=>(
-              <button key={t.key} className="sidebar-btn" onClick={()=>setTab(t.key)} style={{
+              <button key={t.key} data-tour={t.tourId} className="sidebar-btn" onClick={()=>setTab(t.key)} style={{
                 display:"flex",alignItems:"center",gap:12,padding:"12px 14px",
                 border:"none",borderRadius:10,cursor:"pointer",width:"100%",textAlign:"left",
                 background:tab===t.key?K.surface:"transparent",
                 color:tab===t.key?K.white:K.grayLight,
                 fontSize:14,fontWeight:tab===t.key?600:400,
+                position:"relative",zIndex:tourActive && tourSteps[tourStep].target===t.tourId ? 1001 : "auto",
               }}>
                 <Ic d={t.icon} size={20} color={tab===t.key?K.accent:K.grayLight} sw={tab===t.key?2.2:1.5}/>
                 {t.label}
@@ -305,7 +335,7 @@ function Kota() {
           </div>
 
           {/* Stats */}
-          <div style={{padding:"12px 14px",borderTop:`1px solid ${K.border}`}}>
+          <div data-tour="sidebar-stats" style={{padding:"12px 14px",borderTop:`1px solid ${K.border}`,position:"relative",zIndex:tourActive && tourSteps[tourStep].target==="sidebar-stats"?1001:"auto"}}>
             <div style={{display:"flex",gap:8,marginBottom:12}}>
               {[
                 {l:"En attente",v:devisList.filter(d=>d.status==="envoyé"||d.status==="brouillon").length},
@@ -358,7 +388,95 @@ function Kota() {
           )}
         </div>
       </>)}
+
+      {/* TOUR OVERLAY */}
+      {tourActive && onboarded && (
+        <TourOverlay
+          step={tourSteps[tourStep]}
+          stepIndex={tourStep}
+          totalSteps={tourSteps.length}
+          onNext={nextTour}
+          onSkip={endTour}
+        />
+      )}
     </div>
+  );
+}
+
+// ─── TOUR OVERLAY ─────────────────────────────────────────
+function TourOverlay({step,stepIndex,totalSteps,onNext,onSkip}){
+  const [pos,setPos] = useState(null);
+
+  useEffect(()=>{
+    const el = document.querySelector(`[data-tour="${step.target}"]`);
+    if(el){
+      const r = el.getBoundingClientRect();
+      setPos({top:r.top,left:r.left,right:r.right,bottom:r.bottom,width:r.width,height:r.height});
+    }
+  },[step.target]);
+
+  if(!pos) return null;
+
+  // Tooltip position: right of the highlighted element
+  const tooltipLeft = Math.min(pos.right + 20, window.innerWidth - 340);
+  const tooltipTop = Math.max(16, Math.min(pos.top - 10, window.innerHeight - 280));
+
+  const isLast = stepIndex === totalSteps - 1;
+
+  return (
+    <>
+      <style>{`
+        @keyframes kotaPulse {
+          0%,100% { transform: scale(1); box-shadow: 0 0 0 0 ${K.accent}80, 0 0 30px ${K.accent}60; }
+          50% { transform: scale(1.04); box-shadow: 0 0 0 14px ${K.accent}00, 0 0 50px ${K.accent}90; }
+        }
+        .kota-tour-pulse { animation: kotaPulse 1.6s ease-in-out infinite; border-radius: 10px; }
+      `}</style>
+      {/* Backdrop with cutout effect via 4 dark divs around the element */}
+      <div onClick={onSkip} style={{position:"fixed",top:0,left:0,right:0,height:pos.top,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(2px)",zIndex:999}}/>
+      <div onClick={onSkip} style={{position:"fixed",top:pos.bottom,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(2px)",zIndex:999}}/>
+      <div onClick={onSkip} style={{position:"fixed",top:pos.top,left:0,width:pos.left,height:pos.height,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(2px)",zIndex:999}}/>
+      <div onClick={onSkip} style={{position:"fixed",top:pos.top,left:pos.right,right:0,height:pos.height,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(2px)",zIndex:999}}/>
+
+      {/* Pulse frame around element */}
+      <div className="kota-tour-pulse" style={{
+        position:"fixed",
+        top:pos.top - 2,left:pos.left - 2,
+        width:pos.width + 4,height:pos.height + 4,
+        border:`2px solid ${K.accent}`,
+        pointerEvents:"none",zIndex:1000,
+      }}/>
+
+      {/* Tooltip */}
+      <div style={{
+        position:"fixed",top:tooltipTop,left:tooltipLeft,width:300,zIndex:1002,
+        background:"#0f172a",border:`1px solid ${K.accent}`,borderRadius:14,
+        padding:20,boxShadow:`0 20px 60px rgba(0,0,0,0.6), 0 0 40px ${K.accent}30`,
+      }}>
+        {/* Arrow pointing left */}
+        <div style={{position:"absolute",left:-9,top:24,width:0,height:0,borderTop:"9px solid transparent",borderBottom:"9px solid transparent",borderRight:`9px solid ${K.accent}`}}/>
+        <div style={{position:"absolute",left:-7,top:25,width:0,height:0,borderTop:"8px solid transparent",borderBottom:"8px solid transparent",borderRight:`8px solid #0f172a`}}/>
+
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+          <div style={{fontSize:11,color:K.accentLight,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em"}}>Étape {stepIndex+1} / {totalSteps}</div>
+          <div style={{display:"flex",gap:4}}>
+            {Array.from({length:totalSteps}).map((_,i)=>(
+              <div key={i} style={{width:20,height:3,background:i<=stepIndex?K.accent:"rgba(255,255,255,0.15)",borderRadius:2,transition:"background 0.3s"}}/>
+            ))}
+          </div>
+        </div>
+
+        <div style={{fontSize:17,fontWeight:700,color:"#fff",marginBottom:8}}>{step.title}</div>
+        <div style={{fontSize:13,color:K.gray,lineHeight:1.6,marginBottom:18}}>{step.desc}</div>
+
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <button onClick={onSkip} style={{background:"transparent",border:"none",color:K.grayLight,fontSize:12,cursor:"pointer",fontWeight:500}}>Passer la visite</button>
+          <button onClick={onNext} style={{background:K.gradient,color:"#fff",border:"none",borderRadius:10,padding:"9px 18px",fontSize:13,fontWeight:600,cursor:"pointer"}}>
+            {isLast ? "Terminer ✓" : "Suivant →"}
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -1088,7 +1206,6 @@ function ComptaPage({devisList,profile,onBack}){
   );
 }
 
-// ─── COMPTA STANDALONE WRAPPER ───────────────────────
 function ComptaStandalone() {
   const profile = {
     company_name: "Durand Plomberie",
@@ -1105,11 +1222,7 @@ function ComptaStandalone() {
   return (
     <div style={{fontFamily:"'Outfit',sans-serif",background:K.dark,color:K.white,height:"100vh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-      <style>{`
-        *{box-sizing:border-box;margin:0}
-        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:${K.border};border-radius:4px}
-        input,textarea,select,button{font-family:'Outfit',sans-serif}
-      `}</style>
+      <style>{`*{box-sizing:border-box;margin:0}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:${K.border};border-radius:4px}input,textarea,select,button{font-family:'Outfit',sans-serif}`}</style>
       <div style={{padding:"12px 20px",background:K.card,borderBottom:`1px solid ${K.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:32,height:32,background:K.gradient,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900}}>K</div>
