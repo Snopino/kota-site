@@ -228,7 +228,7 @@ export default function KotaLanding() {
         {/* CTA */}
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 48 }}>
           <button
-            onClick={()=>window.location.href="/login"}
+            onClick={()=>window.location.href="/login?mode=signup"}
             onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px) scale(1.03)";e.currentTarget.style.boxShadow=`0 14px 40px ${K.accent}50`;}}
             onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0) scale(1)";e.currentTarget.style.boxShadow=`0 8px 32px ${K.accent}30`;}}
             style={{
@@ -543,7 +543,7 @@ export default function KotaLanding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>window.location.href="/login"} style={{
+            <button onClick={()=>window.location.href="/login?mode=signup"} style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: "transparent", border: `1px solid ${K.darkBorder}`,
               color: K.white, fontSize: 15, fontWeight: 600, cursor: "pointer",
@@ -573,7 +573,7 @@ export default function KotaLanding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>window.location.href="/login"} style={{
+            <button onClick={()=>window.location.href="/login?mode=signup"} style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: K.gradientMain, border: "none",
               color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer",
@@ -609,7 +609,7 @@ export default function KotaLanding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>window.location.href="/login"} style={{
+            <button onClick={()=>window.location.href="/login?mode=signup"} style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: "linear-gradient(135deg, #8b5cf6, #a78bfa)", border: "none",
               color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer",
