@@ -354,58 +354,55 @@ export default function KotaLanding() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
           {[
             {
               icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
-              title: "Chat intelligent",
-              desc: "Décrivez votre chantier en langage naturel. Dictez ou tapez. L'IA comprend et génère.",
+              title: "Assistant IA",
+              desc: "Chat ou dictée vocale. L'IA comprend le langage du chantier et génère votre devis en 30 secondes.",
               color: K.accent,
             },
             {
-              icon: "M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8",
-              title: "Dictée vocale",
-              desc: "Les mains sales ? Appuyez sur le micro et parlez. Parfait sur le chantier.",
-              color: K.green,
-            },
-            {
               icon: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6",
-              title: "Devis conformes",
-              desc: "SIRET, TVA, assurance décennale, mentions légales... tout est pré-rempli automatiquement.",
+              title: "Devis pro",
+              desc: "16 mentions légales obligatoires auto-remplies. Export PDF impeccable avec votre logo.",
               color: K.orange,
             },
             {
               icon: "M22 2L11 13M22 2l-7 20-4-9-9-4z",
-              title: "Envoi en 1 clic",
-              desc: "Envoyez le devis par email ou lien. Le client signe en ligne. Fini les allers-retours.",
+              title: "Suivi client",
+              desc: "Envoi par email ou lien. Relance IA personnalisée (email, SMS, WhatsApp) si pas de réponse.",
               color: K.pink,
+              badge: "NOUVEAU",
             },
             {
-              icon: "M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z",
-              title: "Tarifs intelligents",
-              desc: "Vos tarifs, votre marge, vos prestations. L'IA s'adapte à VOTRE façon de travailler.",
-              color: "#8b5cf6",
-            },
-            {
-              icon: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3",
-              title: "PDF professionnel",
-              desc: "Export PDF impeccable en un clic. Votre logo, vos couleurs, prêt à imprimer.",
-              color: K.accentLight,
+              icon: "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6",
+              title: "Espace comptable",
+              desc: "Lien unique à partager. Votre comptable voit tous vos devis, filtre, exporte en CSV.",
+              color: K.green,
             },
           ].map((f, i) => (
             <div key={f.title} id={`feat-${i}`} data-reveal className="hover-lift" style={{
-              ...reveal(`feat-${i}`, i * 0.1),
+              ...reveal(`feat-${i}`, i * 0.08),
               background: K.gradientCard, border: `1px solid ${K.darkBorder}`,
-              borderRadius: 18, padding: 28, cursor: "default",
+              borderRadius: 18, padding: 28, cursor: "default", position: "relative",
             }}>
+              {f.badge && (
+                <div style={{
+                  position: "absolute", top: 16, right: 16,
+                  background: K.green, color: "#fff",
+                  fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 100,
+                  letterSpacing: "0.05em",
+                }}>{f.badge}</div>
+              )}
               <div style={{
-                width: 48, height: 48, borderRadius: 14, background: `${f.color}15`,
+                width: 52, height: 52, borderRadius: 14, background: `${f.color}15`,
                 display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20,
               }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={f.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={f.icon} /></svg>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={f.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={f.icon} /></svg>
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{f.title}</h3>
-              <p style={{ fontSize: 14, color: K.gray, lineHeight: 1.7 }}>{f.desc}</p>
+              <h3 style={{ fontSize: 19, fontWeight: 700, marginBottom: 10 }}>{f.title}</h3>
+              <p style={{ fontSize: 14, color: K.gray, lineHeight: 1.65 }}>{f.desc}</p>
             </div>
           ))}
         </div>
