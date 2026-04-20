@@ -141,11 +141,11 @@ export default function KotaLanding() {
           <a onClick={()=>document.getElementById("pricing")?.scrollIntoView({behavior:"smooth",block:"start"})} style={{ fontSize: 14, color: K.gray, fontWeight: 500, textDecoration: "none", cursor: "pointer" }}>Tarifs</a>
           <a onClick={()=>document.getElementById("faq")?.scrollIntoView({behavior:"smooth",block:"start"})} style={{ fontSize: 14, color: K.gray, fontWeight: 500, textDecoration: "none", cursor: "pointer" }}>FAQ</a>
         </div>
-        <button onClick={()=>setShowDemoModal(true)} className="nav-cta-desktop" style={{
+        <button onClick={()=>window.location.href="/login"} className="nav-cta-desktop" style={{
           background: K.gradientMain, color: "#fff", border: "none",
           borderRadius: 10, padding: "10px 22px", fontSize: 14, fontWeight: 600,
           cursor: "pointer", transition: "all 0.2s",
-        }}>Essai gratuit</button>
+        }}>Se connecter</button>
         <button className="hamburger" onClick={()=>setMobileMenu(!mobileMenu)} style={{
           background: "none", border: "none", cursor: "pointer", padding: 8,
           display: "flex", flexDirection: "column", gap: 5,
@@ -170,11 +170,11 @@ export default function KotaLanding() {
               borderRadius: 10, transition: "background 0.2s",
             }}>{item.label}</a>
           ))}
-          <button onClick={()=>{setShowDemoModal(true);setMobileMenu(false);}} style={{
+          <button onClick={()=>{window.location.href="/login";}} style={{
             background: K.gradientMain, color: "#fff", border: "none",
             borderRadius: 12, padding: "14px", fontSize: 15, fontWeight: 700,
             cursor: "pointer", marginTop: 8, width: "100%",
-          }}>Essai gratuit</button>
+          }}>Se connecter</button>
         </div>
       )}
 
@@ -228,7 +228,7 @@ export default function KotaLanding() {
         {/* CTA */}
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 48 }}>
           <button
-            onClick={()=>setShowDemoModal(true)}
+            onClick={()=>window.location.href="/login"}
             onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px) scale(1.03)";e.currentTarget.style.boxShadow=`0 14px 40px ${K.accent}50`;}}
             onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0) scale(1)";e.currentTarget.style.boxShadow=`0 8px 32px ${K.accent}30`;}}
             style={{
@@ -543,7 +543,7 @@ export default function KotaLanding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>setShowDemoModal(true)} style={{
+            <button onClick={()=>window.location.href="/login"} style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: "transparent", border: `1px solid ${K.darkBorder}`,
               color: K.white, fontSize: 15, fontWeight: 600, cursor: "pointer",
@@ -573,7 +573,7 @@ export default function KotaLanding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>setShowDemoModal(true)} style={{
+            <button onClick={()=>window.location.href="/login"} style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: K.gradientMain, border: "none",
               color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer",
@@ -609,7 +609,7 @@ export default function KotaLanding() {
                 </div>
               ))}
             </div>
-            <button onClick={()=>setShowDemoModal(true)} style={{
+            <button onClick={()=>window.location.href="/login"} style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: "linear-gradient(135deg, #8b5cf6, #a78bfa)", border: "none",
               color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer",

@@ -47,7 +47,7 @@ export default function LoginPage() {
         });
         if (error) throw error;
         // Redirect to demo or dashboard
-        window.location.href = "/demo";
+        window.location.href = "/app";
       }
     } catch (err) {
       setError(err.message || "Une erreur est survenue.");
