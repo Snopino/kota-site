@@ -1071,14 +1071,14 @@ function ComptaPage({devisList,profile,onBack}){
   return(
     <div style={{height:"100%",overflow:"auto"}}>
       {/* Header */}
-      <div style={{padding:"14px 20px",background:K.card,borderBottom:`1px solid ${K.border}`,display:"flex",alignItems:"center",gap:12,position:"sticky",top:0,zIndex:10}}>
+      <div style={{padding:"14px 20px",background:K.card,borderBottom:`1px solid ${K.border}`,display:"flex",alignItems:"center",gap:12,position:"sticky",top:0,zIndex:10,flexWrap:"wrap"}}>
         <button onClick={onBack} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic d={ICONS.back} size={20}/></button>
-        <div style={{flex:1}}>
+        <div style={{flex:1,minWidth:0}}>
           <div style={{fontWeight:700,fontSize:16}}>Espace comptable</div>
-          <div style={{fontSize:12,color:K.grayLight}}>{profile.company_name} — Lecture seule</div>
+          <div style={{fontSize:12,color:K.grayLight,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{profile.company_name} — Lecture seule</div>
         </div>
-        <button onClick={()=>setShareOpen(true)} style={{padding:"8px 14px",borderRadius:10,border:"none",background:K.gradient,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>
-          <Ic d={ICONS.send} size={14} color="#fff"/> Partager à mon comptable
+        <button onClick={()=>setShareOpen(true)} style={{padding:"8px 14px",borderRadius:10,border:"none",background:K.gradient,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap"}}>
+          <Ic d={ICONS.send} size={14} color="#fff"/> <span className="share-btn-text">Partager</span>
         </button>
       </div>
 
@@ -1133,7 +1133,7 @@ function ComptaPage({devisList,profile,onBack}){
 
       <div style={{padding:"16px 20px 24px"}}>
         {/* Stats */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:20}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(140px, 1fr))",gap:12,marginBottom:20}}>
           {[{l:"Devis",v:filtered.length,c:K.accent},{l:"Total HT",v:fmtEur(totHt),c:K.white},{l:"TVA",v:fmtEur(totTva),c:K.orange},{l:"Total TTC",v:fmtEur(totTtc),c:K.green}].map(s=>(
             <div key={s.l} style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:14,padding:"14px 16px"}}>
               <div style={{fontSize:11,color:K.grayLight,fontWeight:500,marginBottom:4}}>{s.l}</div>
@@ -1163,8 +1163,8 @@ function ComptaPage({devisList,profile,onBack}){
         </div>
 
         {/* Table */}
-        <div style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:14,overflow:"hidden"}}>
-          <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+        <div style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:14,overflow:"auto",maxWidth:"100%"}}>
+          <table style={{width:"100%",minWidth:700,borderCollapse:"collapse",fontSize:13}}>
             <thead><tr style={{borderBottom:`2px solid ${K.border}`}}>
               {["N° Devis","Date","Client","Description","HT","TVA","TTC","Statut"].map(h=>(
                 <th key={h} style={{textAlign:"left",padding:"12px 14px",fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",color:K.grayLight,whiteSpace:"nowrap"}}>{h}</th>
@@ -1219,13 +1219,13 @@ function ComptaStandalone() {
     <div style={{fontFamily:"'Outfit',sans-serif",background:K.dark,color:K.white,height:"100vh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
       <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
       <style>{`*{box-sizing:border-box;margin:0}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:${K.border};border-radius:4px}input,textarea,select,button{font-family:'Outfit',sans-serif}`}</style>
-      <div style={{padding:"12px 20px",background:K.card,borderBottom:`1px solid ${K.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <div style={{padding:"12px 20px",background:K.card,borderBottom:`1px solid ${K.border}`,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:32,height:32,background:K.gradient,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:900}}>K</div>
           <span style={{fontWeight:700,fontSize:15}}>Kōta — Espace Comptable</span>
         </div>
         <div style={{fontSize:12,color:K.grayLight,display:"flex",alignItems:"center",gap:6}}>
-          <div style={{width:8,height:8,borderRadius:"50%",background:K.green}}/> Lien sécurisé · Lecture seule
+          <div style={{width:8,height:8,borderRadius:"50%",background:K.green}}/> Lecture seule
         </div>
       </div>
       <div style={{flex:1,overflow:"hidden"}}>
