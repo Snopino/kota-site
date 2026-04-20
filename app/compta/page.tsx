@@ -290,6 +290,8 @@ function Kota() {
         @media (max-width: 768px) {
           .desktop-sidebar { display: none !important; }
           .mobile-nav { display: flex !important; }
+          .relance-modal { padding: 18px !important; border-radius: 14px !important; }
+          .relance-channels button span, .relance-tones button span { font-size: 11px !important; }
         }
         @media (min-width: 769px) {
           .mobile-nav { display: none !important; }
@@ -728,9 +730,17 @@ function DevisCard({devis:d,onOpen,profile,onSend,onPreview}) {
 
 // ─── DEVIS LIST ─────────────────────────────────────────────
 function DevisListPage({devisList,openDevis,profile,onCompta}) {
+  const [relanceDevis,setRelanceDevis] = useState(null);
   const att=devisList.filter(d=>d.status==="envoyé"||d.status==="brouillon").length;
   const acc=devisList.filter(d=>d.status==="accepté").length;
   const ca=devisList.filter(d=>d.status==="accepté").reduce((s,d)=>s+d.total_ttc,0);
+
+  const daysSince = (dateStr) => {
+    const d = new Date(dateStr);
+    const diff = Math.floor((Date.now() - d.getTime()) / (1000*60*60*24));
+    return diff;
+  };
+
   return (
     <div style={{height:"100%",overflow:"auto"}}>
       {/* Stats header */}
@@ -754,12 +764,169 @@ function DevisListPage({devisList,openDevis,profile,onCompta}) {
             <div style={{fontSize:12,color:K.grayLight}}>{profile.forme_juridique} — SIRET {profile.siret}</div>
           </div>
         </div>
-        {devisList.map(d=>(
-          <div key={d.id} onClick={()=>openDevis(d)} className="fade-up" style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:14,padding:"14px 16px",cursor:"pointer",marginBottom:10}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><div><div style={{fontWeight:600,fontSize:15}}>{d.client_name}</div><div style={{fontSize:13,color:K.grayLight,marginTop:2}}>{d.description}</div></div><span style={statusSt(d.status)}>{d.status}</span></div>
-            <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}><span style={{fontSize:12,color:K.grayLight}}>{d.devis_number} — {d.created_at}</span><span style={{fontWeight:800,fontSize:16,color:K.accentLight}}>{fmtEur(d.total_ttc)}</span></div>
+        {devisList.map(d=>{
+          const days = daysSince(d.created_at);
+          const canRelance = d.status === "envoyé" && days >= 1;
+          return (
+            <div key={d.id} className="fade-up" style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:14,padding:"14px 16px",marginBottom:10}}>
+              <div onClick={()=>openDevis(d)} style={{cursor:"pointer"}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><div><div style={{fontWeight:600,fontSize:15}}>{d.client_name}</div><div style={{fontSize:13,color:K.grayLight,marginTop:2}}>{d.description}</div></div><span style={statusSt(d.status)}>{d.status}</span></div>
+                <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}><span style={{fontSize:12,color:K.grayLight}}>{d.devis_number} — {d.created_at}{canRelance && ` · ${days}j sans réponse`}</span><span style={{fontWeight:800,fontSize:16,color:K.accentLight}}>{fmtEur(d.total_ttc)}</span></div>
+              </div>
+              {canRelance && (
+                <button onClick={(e)=>{e.stopPropagation();setRelanceDevis(d);}} style={{marginTop:12,width:"100%",padding:"9px 14px",borderRadius:10,border:`1px solid ${K.accent}`,background:`${K.accent}10`,color:K.accentLight,fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  <Ic d={ICONS.send} size={14} color={K.accentLight}/> Relancer
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {relanceDevis && <RelanceModal devis={relanceDevis} profile={profile} onClose={()=>setRelanceDevis(null)}/>}
+    </div>
+  );
+}
+
+// ─── RELANCE MODAL ─────────────────────────────────────────
+function RelanceModal({devis,profile,onClose}){
+  const [channel,setChannel] = useState("email");
+  const [tone,setTone] = useState("pro");
+  const [message,setMessage] = useState("");
+  const [sent,setSent] = useState(false);
+
+  const generateMessage = () => {
+    const subject = `Relance — Devis ${devis.devis_number}`;
+    const greeting = {
+      pro: `Bonjour ${devis.client_name},`,
+      friendly: `Bonjour ${devis.client_name} !`,
+      firm: `Bonjour ${devis.client_name},`,
+    }[tone];
+
+    const body = {
+      pro: `Je reviens vers vous concernant le devis ${devis.devis_number} pour "${devis.description}" que je vous ai envoyé le ${devis.created_at}.\n\nJe reste à votre disposition pour toute question ou ajustement. N'hésitez pas à me contacter pour en discuter.\n\nDans l'attente de votre retour,\n${profile.company_name}`,
+      friendly: `J'espère que vous allez bien !\n\nJe reviens rapidement vers vous au sujet du devis ${devis.devis_number} pour "${devis.description}". Je voulais savoir si vous aviez pu y jeter un œil et si vous aviez des questions.\n\nN'hésitez pas à m'appeler si besoin, je suis là pour en parler.\n\nÀ très vite,\n${profile.company_name}`,
+      firm: `Je fais suite à l'envoi du devis ${devis.devis_number} pour "${devis.description}" datant du ${devis.created_at}.\n\nSans retour de votre part sous 48h, je me permettrai de considérer que ce devis ne vous convient pas et de libérer le créneau prévu pour d'autres chantiers.\n\nRestant à votre disposition,\n${profile.company_name}`,
+    }[tone];
+
+    if(channel === "email"){
+      return `Objet : ${subject}\n\n${greeting}\n\n${body}`;
+    } else if(channel === "sms" || channel === "whatsapp"){
+      // version courte pour SMS/WhatsApp
+      const shortBody = {
+        pro: `Bonjour ${devis.client_name}, je reviens vers vous pour le devis ${devis.devis_number}. Auriez-vous eu le temps de l'étudier ? Je reste disponible si vous avez des questions. ${profile.company_name}`,
+        friendly: `Bonjour ${devis.client_name} ! Petit message pour savoir si vous avez pu regarder le devis ${devis.devis_number} que je vous ai envoyé. N'hésitez pas si questions ! ${profile.company_name}`,
+        firm: `Bonjour ${devis.client_name}, sans retour sous 48h concernant le devis ${devis.devis_number}, je libérerai le créneau prévu. Merci de me confirmer votre décision. ${profile.company_name}`,
+      }[tone];
+      return shortBody;
+    }
+  };
+
+  useEffect(()=>{
+    setMessage(generateMessage());
+  },[channel,tone]);
+
+  const handleSend = () => {
+    const encoded = encodeURIComponent(message);
+    if(channel === "email"){
+      const subject = encodeURIComponent(`Relance — Devis ${devis.devis_number}`);
+      const body = encodeURIComponent(message.replace(/^Objet : .*\n\n/, ""));
+      window.location.href = `mailto:${devis.client_email||""}?subject=${subject}&body=${body}`;
+    } else if(channel === "sms"){
+      window.location.href = `sms:${devis.client_phone||""}?body=${encoded}`;
+    } else if(channel === "whatsapp"){
+      const phone = (devis.client_phone||"").replace(/[^0-9]/g,"");
+      window.open(`https://wa.me/${phone}?text=${encoded}`,"_blank");
+    }
+    setSent(true);
+    setTimeout(onClose, 1500);
+  };
+
+  const channels = [
+    {k:"email",l:"Email",icon:ICONS.mail},
+    {k:"sms",l:"SMS",icon:ICONS.chat},
+    {k:"whatsapp",l:"WhatsApp",icon:ICONS.send},
+  ];
+  const tones = [
+    {k:"friendly",l:"Amical",emoji:"😊"},
+    {k:"pro",l:"Pro",emoji:"👔"},
+    {k:"firm",l:"Ferme",emoji:"⚡"},
+  ];
+
+  return (
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",backdropFilter:"blur(8px)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div onClick={e=>e.stopPropagation()} className="relance-modal" style={{background:K.card,border:`1px solid ${K.border}`,borderRadius:20,padding:28,maxWidth:560,width:"100%",maxHeight:"90vh",overflow:"auto",boxShadow:"0 20px 60px rgba(0,0,0,0.6)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}>
+          <div style={{width:44,height:44,borderRadius:12,background:K.accentGlow,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <Ic d={ICONS.send} size={22} color={K.accent}/>
           </div>
-        ))}
+          <div style={{flex:1}}>
+            <div style={{fontSize:18,fontWeight:700}}>Relancer {devis.client_name}</div>
+            <div style={{fontSize:13,color:K.grayLight}}>Devis {devis.devis_number} — {fmtEur(devis.total_ttc)}</div>
+          </div>
+          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
+            <Ic d={ICONS.x} size={22} color={K.grayLight}/>
+          </button>
+        </div>
+
+        {/* Canal */}
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:12,fontWeight:600,color:K.grayLight,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>Canal</div>
+          <div style={{display:"flex",gap:8}}>
+            {channels.map(c=>(
+              <button key={c.k} onClick={()=>setChannel(c.k)} style={{
+                flex:1,padding:"10px",borderRadius:10,cursor:"pointer",
+                border:`1px solid ${channel===c.k?K.accent:K.border}`,
+                background:channel===c.k?`${K.accent}15`:"transparent",
+                color:channel===c.k?K.white:K.gray,
+                fontSize:13,fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+              }}>
+                <Ic d={c.icon} size={14} color={channel===c.k?K.accent:K.gray}/> {c.l}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Ton */}
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:12,fontWeight:600,color:K.grayLight,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>Ton du message</div>
+          <div style={{display:"flex",gap:8}}>
+            {tones.map(t=>(
+              <button key={t.k} onClick={()=>setTone(t.k)} style={{
+                flex:1,padding:"10px",borderRadius:10,cursor:"pointer",
+                border:`1px solid ${tone===t.k?K.accent:K.border}`,
+                background:tone===t.k?`${K.accent}15`:"transparent",
+                color:tone===t.k?K.white:K.gray,
+                fontSize:13,fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+              }}>
+                <span style={{fontSize:16}}>{t.emoji}</span> {t.l}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Message */}
+        <div style={{marginBottom:16}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+            <div style={{fontSize:12,fontWeight:600,color:K.grayLight,textTransform:"uppercase",letterSpacing:"0.08em"}}>Message généré par l'IA</div>
+            <button onClick={()=>setMessage(generateMessage())} style={{background:"none",border:"none",color:K.accentLight,fontSize:12,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
+              ↻ Régénérer
+            </button>
+          </div>
+          <textarea value={message} onChange={e=>setMessage(e.target.value)} rows={channel==="email"?10:5} style={{
+            width:"100%",padding:"14px",borderRadius:12,
+            border:`1px solid ${K.border}`,background:K.inputBg,
+            color:K.white,fontSize:13,fontFamily:"'Outfit',sans-serif",
+            resize:"vertical",lineHeight:1.6,outline:"none",
+          }}/>
+        </div>
+
+        {/* Actions */}
+        <div style={{display:"flex",gap:10}}>
+          <button onClick={onClose} style={{flex:1,padding:"12px",borderRadius:12,border:`1px solid ${K.border}`,background:"transparent",color:K.gray,fontSize:14,fontWeight:600,cursor:"pointer"}}>Annuler</button>
+          <button onClick={handleSend} disabled={sent} style={{flex:2,padding:"12px",borderRadius:12,border:"none",background:sent?K.green:K.gradient,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+            {sent ? "✓ Envoyé" : <>Envoyer par {channels.find(c=>c.k===channel).l} →</>}
+          </button>
+        </div>
       </div>
     </div>
   );
